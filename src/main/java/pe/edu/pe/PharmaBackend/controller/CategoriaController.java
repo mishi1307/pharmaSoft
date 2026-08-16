@@ -19,4 +19,8 @@ public class CategoriaController {
     public Iterable<Categoria> getCategorias() {
         return categoriaService.readAll();
     }
+    @GetMapping("/{id}")
+    public Categoria getIdCategorias(@PathVariable Long id) {
+        return categoriaService.read(id).get();
+    }
 }
