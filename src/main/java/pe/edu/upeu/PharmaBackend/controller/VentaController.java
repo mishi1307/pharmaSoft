@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upeu.PharmaBackend.dto.VentaRequestDTO;
 import pe.edu.upeu.PharmaBackend.dto.VentaResponseDTO;
+import pe.edu.upeu.PharmaBackend.dto.PaginaResponseDTO;
 import pe.edu.upeu.PharmaBackend.enums.EstadoVenta;
 import pe.edu.upeu.PharmaBackend.service.service.VentaService;
 
@@ -61,7 +62,7 @@ public class VentaController {
      * filtran. Sin coincidencias responde 200 con arreglo vacío.
      */
     @GetMapping("/buscar")
-    public ResponseEntity<List<VentaResponseDTO>> buscar(
+    public ResponseEntity<PaginaResponseDTO<VentaResponseDTO>> buscar(
 
             @RequestParam(required = false)
             Long clienteId,
@@ -81,7 +82,11 @@ public class VentaController {
             String ordenarPor,
 
             @RequestParam(required = false, defaultValue = "desc")
-            String direccion) {
+            String direccion,
+
+            @RequestParam(defaultValue = "0") int pagina,
+
+            @RequestParam(defaultValue = "10") int tamanio) {
 
         return ResponseEntity.ok(
                 ventaService.buscarVentas(
@@ -90,7 +95,9 @@ public class VentaController {
                         desde,
                         hasta,
                         ordenarPor,
-                        direccion
+                        direccion,
+                        pagina,
+                        tamanio
                 )
         );
     }

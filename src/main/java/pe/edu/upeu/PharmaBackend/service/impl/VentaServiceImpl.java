@@ -3,12 +3,16 @@ package pe.edu.upeu.PharmaBackend.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.upeu.PharmaBackend.dto.DetalleVentaRequestDTO;
 import pe.edu.upeu.PharmaBackend.dto.DetalleVentaResponseDTO;
 import pe.edu.upeu.PharmaBackend.dto.VentaRequestDTO;
 import pe.edu.upeu.PharmaBackend.dto.VentaResponseDTO;
+import pe.edu.upeu.PharmaBackend.dto.PaginaResponseDTO;
 import pe.edu.upeu.PharmaBackend.entity.Cliente;
 import pe.edu.upeu.PharmaBackend.entity.DetalleVenta;
 import pe.edu.upeu.PharmaBackend.entity.Producto;
@@ -120,13 +124,15 @@ public class VentaServiceImpl implements VentaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<VentaResponseDTO> buscarVentas(
+    public PaginaResponseDTO<VentaResponseDTO> buscarVentas(
             Long clienteId,
             EstadoVenta estado,
             LocalDate desde,
             LocalDate hasta,
             String ordenarPor,
-            String direccion) {
+            String direccion,
+            int pagina,
+            int tamanio) {
 
         long inicio = System.currentTimeMillis();
 
@@ -155,21 +161,32 @@ public class VentaServiceImpl implements VentaService {
                 ? null
                 : hasta.atTime(LocalTime.MAX);
 
-        List<VentaResponseDTO> resultado =
-                ventaRepository
-                        .buscar(clienteId, estado, desdeHora, hastaHora, sort)
-                        .stream()
-                        .map(this::convertirResponse)
-                        .toList();
+        if (pagina < 0) {
+            throw new ReglaNegocioException("La página no puede ser negativa");
+        }
+        if (tamanio < 1 || tamanio > 100) {
+            throw new ReglaNegocioException("El tamaño de página debe estar entre 1 y 100");
+        }
+
+        Pageable pageable = PageRequest.of(pagina, tamanio, sort);
+        Page<VentaResponseDTO> resultado = ventaRepository
+                .buscar(clienteId, estado, desdeHora, hastaHora, pageable)
+                .map(this::convertirResponse);
 
         log.info("Fin buscar ventas | clienteId={} | estado={} | "
                         + "desde={} | hasta={} | orden={} {} | "
                         + "filas={} | duracionMs={}",
                 clienteId, estado, desde, hasta, ordenarPor, direccion,
-                resultado.size(),
+                resultado.getNumberOfElements(),
                 System.currentTimeMillis() - inicio);
 
-        return resultado;
+        return new PaginaResponseDTO<>(
+                resultado.getContent(),
+                resultado.getNumber(),
+                resultado.getSize(),
+                resultado.getTotalElements(),
+                resultado.getTotalPages(),
+                resultado.isLast());
     }
 
     private Sort construirSort(String ordenarPor, String direccion) {
