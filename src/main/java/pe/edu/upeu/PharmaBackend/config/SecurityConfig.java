@@ -2,6 +2,7 @@ package pe.edu.upeu.PharmaBackend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -26,7 +27,8 @@ public class SecurityConfig {
     private static final String[] PUBLIC = {"/api/v1/auth/login", "/api/health", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/error"};
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http, JwtService jwtService,
-            UserDetailsService userDetailsService, CorsConfigurationSource corsSource,
+            UserDetailsService userDetailsService,
+            @Qualifier("corsConfigurationSource") CorsConfigurationSource corsSource,
             RestAuthenticationEntryPoint entryPoint, RestAccessDeniedHandler deniedHandler) throws Exception {
         var jwtFilter = new JwtAuthenticationFilter(jwtService, userDetailsService);
         http.csrf(AbstractHttpConfigurer::disable).logout(AbstractHttpConfigurer::disable)

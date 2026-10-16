@@ -29,15 +29,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioResponseDTO crear(UsuarioRequestDTO request) {
         String username = request.getUsername().trim().toLowerCase(Locale.ROOT);
         Empleado empleado = empleados.findById(request.getEmpleadoId()).orElseThrow(() -> new RecursoNoEncontradoException("Empleado no encontrado con id: " + request.getEmpleadoId()));
-        if (!Boolean.TRUE.equals(empleado.getEstado())) throw new ReglaNegocioException("El empleado " + empleado.getNombreCompleto() + " está inactivo");
-        if (usuarios.existsByEmpleadoId(empleado.getId())) throw new ReglaNegocioException("El empleado " + empleado.getNombreCompleto() + " ya tiene un usuario");
-        if (usuarios.existsByUsernameIgnoreCase(username)) throw new ReglaNegocioException("Ya existe un usuario con el nombre: " + username);
         List<Rol> rolesEncontrados = roles.findAllById(request.getRolIds());
         if (rolesEncontrados.size() != request.getRolIds().size()) {
             Set<Long> faltantes = new HashSet<>(request.getRolIds());
             faltantes.removeAll(rolesEncontrados.stream().map(Rol::getId).collect(Collectors.toSet()));
             throw new RecursoNoEncontradoException("Roles no encontrados: " + faltantes);
         }
+        if (!Boolean.TRUE.equals(empleado.getEstado())) throw new ReglaNegocioException("El empleado " + empleado.getNombreCompleto() + " está inactivo");
+        if (usuarios.existsByEmpleadoId(empleado.getId())) throw new ReglaNegocioException("El empleado " + empleado.getNombreCompleto() + " ya tiene un usuario");
+        if (usuarios.existsByUsernameIgnoreCase(username)) throw new ReglaNegocioException("Ya existe un usuario con el nombre: " + username);
         if (request.getPassword().getBytes(StandardCharsets.UTF_8).length > 72) throw new ReglaNegocioException("La contraseña no puede superar 72 bytes");
         Usuario user = new Usuario(); user.setUsername(username); user.setPassword(encoder.encode(request.getPassword()));
         user.setEstado(true); user.setEmpleado(empleado); user.setRoles(new HashSet<>(rolesEncontrados));
