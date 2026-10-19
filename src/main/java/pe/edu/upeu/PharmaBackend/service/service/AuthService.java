@@ -5,4 +5,5 @@ import pe.edu.upeu.PharmaBackend.dto.auth.*;
 public interface AuthService {
     LoginResponseDTO login(LoginRequestDTO request);
     UsuarioResponseDTO usuarioActual(String username);
+    void cambiarPassword(String username, CambioPasswordRequestDTO request);
 }

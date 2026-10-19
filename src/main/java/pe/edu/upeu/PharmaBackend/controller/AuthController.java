@@ -14,4 +14,9 @@ public class AuthController {
     public AuthController(AuthService authService) { this.authService = authService; }
     @PostMapping("/login") public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) { return ResponseEntity.ok(authService.login(request)); }
     @GetMapping("/me") public ResponseEntity<UsuarioResponseDTO> me(Authentication auth) { return ResponseEntity.ok(authService.usuarioActual(auth.getName())); }
+    @PutMapping("/password")
+    public ResponseEntity<Void> cambiarPassword(Authentication auth, @Valid @RequestBody CambioPasswordRequestDTO request) {
+        authService.cambiarPassword(auth.getName(), request);
+        return ResponseEntity.noContent().build();
+    }
 }

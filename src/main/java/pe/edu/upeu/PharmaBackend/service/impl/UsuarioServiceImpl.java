@@ -54,4 +54,39 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
     @Override @Transactional(readOnly = true)
     public List<RolResponseDTO> listarRoles() { return roles.findAll(Sort.by("nombre")).stream().map(mapper::toRolResponse).toList(); }
+
+    @Override @Transactional
+    public UsuarioResponseDTO asignarRoles(Long id, Set<Long> rolIds, String usernameAdministrador) {
+        Usuario usuario = usuarios.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con id: " + id));
+        List<Rol> rolesEncontrados = roles.findAllById(rolIds);
+        if (rolesEncontrados.size() != rolIds.size()) {
+            Set<Long> faltantes = new HashSet<>(rolIds);
+            faltantes.removeAll(rolesEncontrados.stream().map(Rol::getId).collect(Collectors.toSet()));
+            throw new RecursoNoEncontradoException("Roles no encontrados: " + faltantes);
+        }
+        boolean esElMismoAdministrador = usuario.getUsername().equalsIgnoreCase(usernameAdministrador);
+        boolean tieneRolAdmin = usuario.getRoles().stream().anyMatch(rol -> "ADMIN".equals(rol.getNombre()));
+        boolean conservaRolAdmin = rolesEncontrados.stream().anyMatch(rol -> "ADMIN".equals(rol.getNombre()));
+        if (esElMismoAdministrador && tieneRolAdmin && !conservaRolAdmin) {
+            throw new ReglaNegocioException("Un administrador no puede quitarse a sí mismo el rol ADMIN");
+        }
+        usuario.setRoles(new HashSet<>(rolesEncontrados));
+        Usuario actualizado = usuarios.save(usuario);
+        log.info("Roles actualizados para usuario={} roles={}", actualizado.getUsername(), mapper.nombresRoles(rolesEncontrados));
+        return mapper.toUsuarioResponse(actualizado);
+    }
+
+    @Override @Transactional
+    public UsuarioResponseDTO actualizarEstado(Long id, Boolean estado, String usernameAdministrador) {
+        Usuario usuario = usuarios.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con id: " + id));
+        if (Boolean.FALSE.equals(estado) && usuario.getUsername().equalsIgnoreCase(usernameAdministrador)) {
+            throw new ReglaNegocioException("Un administrador no puede desactivarse a sí mismo");
+        }
+        usuario.setEstado(estado);
+        Usuario actualizado = usuarios.save(usuario);
+        log.info("Estado de usuario actualizado usuario={} estado={}", actualizado.getUsername(), estado);
+        return mapper.toUsuarioResponse(actualizado);
+    }
 }
