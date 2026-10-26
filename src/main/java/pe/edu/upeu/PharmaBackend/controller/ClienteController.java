@@ -2,6 +2,7 @@ package pe.edu.upeu.PharmaBackend.controller;
 
 import pe.edu.upeu.PharmaBackend.dto.ClienteRequestDTO;
 import pe.edu.upeu.PharmaBackend.dto.ClienteResponseDTO;
+import pe.edu.upeu.PharmaBackend.dto.PaginaResponseDTO;
 import pe.edu.upeu.PharmaBackend.service.service.ClienteService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -32,10 +33,14 @@ public class ClienteController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<ClienteResponseDTO>> readAll() {
+    public ResponseEntity<PaginaResponseDTO<ClienteResponseDTO>> readAll(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamanio,
+            @RequestParam(defaultValue = "apellidos") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion) {
 
         return ResponseEntity.ok(
-                clienteService.readAll()
+                clienteService.listar(pagina, tamanio, ordenarPor, direccion)
         );
     }
 
