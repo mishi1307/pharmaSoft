@@ -24,7 +24,7 @@ import pe.edu.upeu.PharmaBackend.security.*;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private static final String[] PUBLIC = {"/api/v1/auth/login", "/api/health", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/error"};
+    private static final String[] PUBLIC = {"/api/v1/auth/login", "/api/health", "/actuator/health", "/actuator/health/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/error"};
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http, JwtService jwtService,
             UserDetailsService userDetailsService,
@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/ventas/**").hasAuthority(Permiso.VENTAS_LEER.name())
                 .requestMatchers("/api/v1/ventas/**").hasAuthority(Permiso.VENTAS_REGISTRAR.name())
                 .requestMatchers("/api/v1/usuarios/**", "/api/v1/empleados/**", "/api/v1/roles/**").hasAuthority(Permiso.USUARIOS_ADMINISTRAR.name())
+                .requestMatchers("/actuator/**").hasAuthority(Permiso.USUARIOS_ADMINISTRAR.name())
                 .anyRequest().authenticated())
             .exceptionHandling(e -> e.authenticationEntryPoint(entryPoint).accessDeniedHandler(deniedHandler))
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
