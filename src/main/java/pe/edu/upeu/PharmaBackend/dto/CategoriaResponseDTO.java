@@ -17,4 +17,6 @@ public class CategoriaResponseDTO {
     private Boolean estado;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaModificacion;
+    private String creadoPor;
+    private String modificadoPor;
 }

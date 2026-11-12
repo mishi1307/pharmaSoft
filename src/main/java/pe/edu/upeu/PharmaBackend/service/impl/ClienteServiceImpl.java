@@ -42,10 +42,7 @@ public class ClienteServiceImpl
     public ClienteResponseDTO create(
             ClienteRequestDTO request) {
 
-        log.info(
-                "Registrando cliente con DNI={}",
-                request.getDni()
-        );
+        log.info("Registrando cliente");
 
         String dni = request.getDni().trim();
         String email = request.getEmail()
@@ -281,7 +278,9 @@ public class ClienteServiceImpl
                 cliente.getDireccion(),
                 cliente.getEstado(),
                 cliente.getFechaCreacion(),
-                cliente.getFechaModificacion()
+                cliente.getFechaModificacion(),
+                cliente.getCreadoPor(),
+                cliente.getModificadoPor()
         );
     }
 

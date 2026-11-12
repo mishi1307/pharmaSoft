@@ -3,6 +3,8 @@ package pe.edu.upeu.PharmaBackend.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.upeu.PharmaBackend.dto.CategoriaRequestDTO;
 import pe.edu.upeu.PharmaBackend.dto.CategoriaResponseDTO;
@@ -22,6 +24,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = {"categorias", "productos", "productoPorId"}, allEntries = true)
     public CategoriaResponseDTO create(CategoriaRequestDTO t) {
         String nombre = t.getNombre().trim();
         if(categoriaRepository.existsByNombreIgnoreCase(nombre)){
@@ -39,6 +42,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = {"categorias", "productos", "productoPorId"}, allEntries = true)
     public CategoriaResponseDTO update(Long aLong, CategoriaRequestDTO t) {
         Categoria categoria = categoriaRepository.findById(aLong).orElseThrow(() ->
                 new RecursoNoEncontradoException(
@@ -65,6 +69,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = {"categorias", "productos", "productoPorId"}, allEntries = true)
     public void delete(Long aLong) {
         Categoria categoria = categoriaRepository.findById(aLong).orElseThrow(()->
                 new RecursoNoEncontradoException(
@@ -76,6 +81,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable("categorias")
     public Iterable<CategoriaResponseDTO> readAll() {
         return categoriaRepository.findAll()
                 .stream()
@@ -91,7 +97,9 @@ public class CategoriaServiceImpl implements CategoriaService {
                 categoria.getDescripcion(),
                 categoria.getEstado(),
                 categoria.getFechaCreacion(),
-                categoria.getFechaModificacion()
+                categoria.getFechaModificacion(),
+                categoria.getCreadoPor(),
+                categoria.getModificadoPor()
         );
     }
 }

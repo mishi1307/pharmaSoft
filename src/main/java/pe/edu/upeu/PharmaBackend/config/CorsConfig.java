@@ -11,7 +11,7 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
     private final List<String> origins;
-    public CorsConfig(@Value("${app.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173,http://localhost:4200,http://localhost:4201,http://localhost:3000}") String[] origins) {
+    public CorsConfig(@Value("${app.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173,http://localhost:4200,http://localhost:4201,http://localhost:3000,http://localhost:8081,http://127.0.0.1:8081}") String[] origins) {
         this.origins = List.of(origins);
     }
     @Bean
@@ -19,8 +19,8 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(origins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Content-Type", "Accept", "Authorization", "Origin"));
-        config.setExposedHeaders(List.of("Location"));
+        config.setAllowedHeaders(List.of("Content-Type", "Accept", "Authorization", "Origin", "X-Request-Id"));
+        config.setExposedHeaders(List.of("Location", "X-Request-Id"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
