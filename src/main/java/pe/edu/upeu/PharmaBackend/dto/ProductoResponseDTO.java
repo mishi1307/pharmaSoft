@@ -22,4 +22,6 @@ public class ProductoResponseDTO {
     private CategoriaResumenDTO categoria;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaModificacion;
+    private String creadoPor;
+    private String modificadoPor;
 }
