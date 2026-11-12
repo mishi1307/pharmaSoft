@@ -1,15 +1,19 @@
 package pe.edu.upeu.PharmaBackend.entity;
 
 import jakarta.persistence.*;
-        import lombok.AllArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "categorias")
+@EntityListeners(AuditingEntityListener.class)
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,6 +36,14 @@ public class Categoria {
 
     @Column(name = "fecha_modificacion")
     private LocalDateTime fechaModificacion;
+
+    @CreatedBy
+    @Column(name = "creado_por", length = 50, updatable = false)
+    private String creadoPor;
+
+    @LastModifiedBy
+    @Column(name = "modificado_por", length = 50)
+    private String modificadoPor;
 
     @PrePersist
     public void prePersist(){

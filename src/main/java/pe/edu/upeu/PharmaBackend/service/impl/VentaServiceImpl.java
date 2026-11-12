@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.upeu.PharmaBackend.dto.DetalleVentaRequestDTO;
 import pe.edu.upeu.PharmaBackend.dto.DetalleVentaResponseDTO;
@@ -31,6 +32,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
+import org.springframework.context.ApplicationEventPublisher;
+import pe.edu.upeu.PharmaBackend.dto.EventoAuditoria;
 
 @Service
 public class VentaServiceImpl implements VentaService {
@@ -39,6 +42,7 @@ public class VentaServiceImpl implements VentaService {
     private final VentaRepository ventaRepository;
     private final ClienteRepository clienteRepository;
     private final ProductoRepository productoRepository;
+    private final ApplicationEventPublisher eventos;
 
     private static final Set<String> CAMPOS_ORDENABLES = Set.of("id", "fecha", "total", "estado");
     private static final String ORDEN_POR_DEFECTO = "fecha";
@@ -46,16 +50,20 @@ public class VentaServiceImpl implements VentaService {
     public VentaServiceImpl(
             VentaRepository ventaRepository,
             ClienteRepository clienteRepository,
-            ProductoRepository productoRepository) {
+            ProductoRepository productoRepository,
+            ApplicationEventPublisher eventos) {
 
         this.ventaRepository = ventaRepository;
         this.clienteRepository = clienteRepository;
         this.productoRepository = productoRepository;
+        this.eventos = eventos;
     }
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = {"productos", "productoPorId"}, allEntries = true)
     public VentaResponseDTO registrar(VentaRequestDTO request) {
+        log.info("Inicio registro de venta | lineas={}", request.getDetalles().size());
         Cliente cliente = clienteRepository.findById(request.getClienteId())
                 .orElseThrow(() ->new RecursoNoEncontradoException("Cliente no encontrado con id: "+ request.getClienteId()));
 
@@ -103,6 +111,10 @@ public class VentaServiceImpl implements VentaService {
         venta.setTotal(total);
 
         Venta guardada =ventaRepository.save(venta);
+        eventos.publishEvent(EventoAuditoria.de("VENTA_REGISTRADA", "Venta", guardada.getId(),
+                "total=" + guardada.getTotal() + " | items=" + guardada.getDetalles().size()));
+
+        log.info("Fin registro de venta | ventaId={} | total={}", guardada.getId(), total);
 
         return convertirResponse(guardada);
     }
@@ -246,12 +258,14 @@ public class VentaServiceImpl implements VentaService {
                 clienteNombre,
                 venta.getEstado().name(),
                 venta.getTotal(),
-                detalles
+                detalles,
+                venta.getCreadoPor()
         );
     }
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = {"productos", "productoPorId"}, allEntries = true)
     public VentaResponseDTO anular(Long id) {
         Venta venta = ventaRepository.findById(id).orElseThrow(() ->
                 new RecursoNoEncontradoException("Venta no encontrada con id: " + id));
