@@ -19,6 +19,9 @@ import pe.edu.upeu.PharmaBackend.security.JwtService;
 import pe.edu.upeu.PharmaBackend.security.PermisosPorRol;
 import pe.edu.upeu.PharmaBackend.service.service.AuthService;
 import java.nio.charset.StandardCharsets;
+import org.springframework.security.core.AuthenticationException;
+import pe.edu.upeu.PharmaBackend.dto.EventoAuditoria;
+import pe.edu.upeu.PharmaBackend.service.service.AuditoriaService;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -28,19 +31,28 @@ public class AuthServiceImpl implements AuthService {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioMapper usuarioMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AuditoriaService auditoriaService;
     public AuthServiceImpl(AuthenticationManager am, JwtService jwt, UsuarioRepository usuarios,
-            UsuarioMapper mapper, PasswordEncoder passwordEncoder) {
+            UsuarioMapper mapper, PasswordEncoder passwordEncoder, AuditoriaService auditoriaService) {
         authenticationManager = am; jwtService = jwt; usuarioRepository = usuarios;
         usuarioMapper = mapper; this.passwordEncoder = passwordEncoder;
+        this.auditoriaService = auditoriaService;
     }
     @Override @Transactional(readOnly = true)
     public LoginResponseDTO login(LoginRequestDTO request) {
         String username = request.getUsername().trim();
         log.info("Intento de inicio de sesión: usuario={}", username);
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, request.getPassword()));
+        Authentication auth;
+        try {
+            auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, request.getPassword()));
+        } catch (AuthenticationException ex) {
+            registrarEventoLogin("LOGIN_FALLIDO", username);
+            throw ex;
+        }
         UserDetails principal = (UserDetails) auth.getPrincipal();
         Usuario user = buscar(principal.getUsername());
         String token = jwtService.generarToken(principal);
+        registrarEventoLogin("LOGIN_EXITOSO", user.getUsername());
         log.info("Inicio de sesión correcto: usuario={} roles={}", user.getUsername(), usuarioMapper.nombresRoles(user.getRoles()));
         return new LoginResponseDTO(token, "Bearer", jwtService.getExpiracionSegundos(), user.getUsername(),
             user.getEmpleado().getNombreCompleto(), usuarioMapper.nombresRoles(user.getRoles()), PermisosPorRol.permisos(user.getRoles()));
@@ -65,5 +77,10 @@ public class AuthServiceImpl implements AuthService {
     }
     private Usuario buscar(String username) {
         return usuarioRepository.findByUsernameIgnoreCase(username).orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado: " + username));
+    }
+
+    private void registrarEventoLogin(String accion, String username) {
+        try { auditoriaService.registrar(EventoAuditoria.login(accion, username)); }
+        catch (RuntimeException ex) { log.error("No se pudo guardar el evento de auditoría de login", ex); }
     }
 }
