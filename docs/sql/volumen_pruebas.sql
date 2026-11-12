@@ -15,7 +15,11 @@ insert into ventas (fecha, total, estado, cliente_id, creado_por)
 select systimestamp - numtodsinterval(dbms_random.value(0, 365), 'DAY'),
        round(dbms_random.value(5, 500), 2),
        'REGISTRADA',
-       (select min(id) from clientes),
+       c.id,
        'carga'
-from dual connect by level <= 20000;
+from (select level n from dual connect by level <= 20000) secuencia
+join (
+    select id, row_number() over (order by id) rn, count(*) over () total
+    from clientes
+) c on c.rn = mod(secuencia.n - 1, c.total) + 1;
 commit;
