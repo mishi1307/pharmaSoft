@@ -28,4 +28,4 @@ Resultados registrados a partir de `actividad practica.docx` y sus capturas. Las
 | I-07 | Seguridad → módulos | Al vencer el token, la SPA vuelve al login y luego recupera la ruta. | Pendiente: no hay resultado de esta comprobación en el Word. |
 | I-08 | Paginación → filtros | En Ventas, cambiar fechas desde otra página vuelve a la primera. | Pendiente: no hay resultado de esta comprobación en el Word. |
 
-Las 7 pruebas E2E automatizadas se ejecutaron tres veces y pasaron (21/21); ese resultado está en el reporte HTML de Playwright. No reemplaza las comprobaciones manuales pendientes de esta matriz.
+La matriz anterior registra que las 7 pruebas E2E de la versión previa pasaron en tres corridas (21/21). No se encontró el reporte HTML en los archivos disponibles para verificar ese dato. La suite actual incorpora seis casos nuevos; sus tres corridas deben ejecutarse y guardarse para cerrar S14. Este dato previo no reemplaza las comprobaciones manuales pendientes de esta matriz.

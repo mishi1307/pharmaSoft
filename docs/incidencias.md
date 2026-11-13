@@ -1,11 +1,68 @@
-# Incidencias de integración y estabilización
+# Registro de incidencias S14
 
-| ID | Módulo | Descripción y pasos | Severidad | Causa | Corrección | Estado |
-|---|---|---|---|---|---|---|
-| INC-01 | Productos | El listado cargaba todos los productos y el frontend solo mostraba los primeros 100. | Alta | El endpoint usaba `findAll()` y la SPA recortaba localmente el resultado. | Se agregó paginación en servidor, orden permitido y estado de página en la URL. | Corregida; paginación validada con 5 000 productos y Playwright 3/3. |
-| INC-02 | Venta / catálogo | Al buscar productos para una venta, los que quedaban fuera de los primeros 100 no aparecían. | Alta | El formulario descargaba un bloque fijo y hacía la búsqueda solo en el navegador. | Se agregó búsqueda paginada al API y consulta con espera de 300 ms desde el formulario. | Corregida; venta y actualización de stock validadas 3/3. |
-| INC-03 | Ventas | La página y el tamaño del listado no se conservaban al recargar; los filtros no reiniciaban la URL en la primera página. | Media | El estado de paginación se guardaba solo en señales del componente. | Los filtros, orden, página y tamaño ahora se leen y escriben en los parámetros de la URL. | Corregida; URL y recarga validadas por Playwright 3/3. |
-| INC-04 | Productos | La consulta inicial enviaba `ordenarPor=undefined` y `direccion=undefined`, generando HTTP 409. | Media | El enlace de ruta de Angular podía asignar `undefined` a las entradas opcionales aunque tuvieran valor inicial. | Se agregaron transformaciones de entrada que normalizan el orden a `nombre` y la dirección a `asc`. | Corregida; consulta inicial y paginación validadas en Playwright 3/3. |
-| INC-05 | Ventas de prueba | Las filas sintéticas de volumen aparecían todas asociadas a Juan Pérez en el listado. | Media | El SQL asignaba cada registro al cliente con el menor ID. | Las 20 000 ventas marcadas `carga` se distribuyeron entre los seis clientes; el SQL de volumen ahora asigna clientes por turnos. Las ventas reales no se modificaron. | Corregida y verificada en Oracle. |
+Las fechas indican cuándo quedó documentada cada incidencia en esta entrega; las fechas originales de detección no se conservaron en todos los registros. El estado se actualizará si las nuevas corridas encuentran una regresión.
 
-Los cambios están implementados en la rama de trabajo actual. La matriz de integración conserva como pendientes las comprobaciones visuales que todavía deben recorrerse manualmente.
+## INC-01 - Listado de productos sin paginación de servidor
+
+- **Fecha de registro:** 2026-11-12. **Módulo:** Productos. **Severidad:** Alta. **Estado:** Corregida.
+- **Pasos:** abrir Productos en una base con más de 100 registros y recorrer el listado. **Esperado:** el backend devuelve páginas y el total correcto. **Obtenido antes del arreglo:** la API cargaba toda la colección y la SPA recortaba localmente los resultados a los primeros 100.
+- **Causa raíz:** consulta `findAll()` sin paginación y recorte en el navegador.
+- **Corrección:** consulta con `Pageable`, orden permitido y página/tamaño preservados en la URL.
+- **Commit de corrección:** backend `f3ccbbd`; frontend `a891c3a`.
+- **Prevención:** `e2e/paginacion.spec.ts` verifica tamaño de página, URL, respuesta HTTP y recarga.
+
+## INC-02 - Búsqueda de productos de venta limitada al primer bloque
+
+- **Fecha de registro:** 2026-11-12. **Módulo:** Venta y catálogo. **Severidad:** Alta. **Estado:** Corregida.
+- **Pasos:** en Nueva venta, buscar un producto activo cuyo nombre no aparezca entre los primeros 100 productos. **Esperado:** aparece si está activo y tiene stock. **Obtenido antes del arreglo:** la búsqueda se hacía sobre una lista limitada descargada en el navegador.
+- **Causa raíz:** la búsqueda del formulario no consultaba el endpoint paginado con el texto ingresado.
+- **Corrección:** búsqueda del servidor con parámetros de página y consulta con debounce.
+- **Commit de corrección:** backend `f3ccbbd`; frontend `a891c3a`.
+- **Prevención:** `e2e/flujo-venta.spec.ts` cubre la búsqueda del producto y el registro de venta; agregar un caso específico con un producto fuera de la primera página cuando los datos de volumen estén disponibles.
+
+## INC-03 - Filtros de ventas y página no sincronizados con la URL
+
+- **Fecha de registro:** 2026-11-12. **Módulo:** Ventas. **Severidad:** Media. **Estado:** Corregida.
+- **Pasos:** abrir Ventas, cambiar de página, modificar fechas y recargar. **Esperado:** el filtro devuelve la vista a la primera página y la URL representa el estado consultado. **Obtenido antes del arreglo:** el estado permanecía solo en el componente y podía perderse al recargar.
+- **Causa raíz:** el componente no utilizaba de forma consistente los parámetros de búsqueda como fuente del estado.
+- **Corrección:** lectura y escritura de filtros, orden, página y tamaño mediante query parameters.
+- **Commit de corrección:** backend `71b9680`; frontend `447139a`.
+- **Prevención:** ejecutar el caso de filtros y página de ventas tres veces; incorporar cobertura E2E específica al ampliar la suite.
+
+## INC-04 - Parámetros opcionales de orden llegaban como `undefined`
+
+- **Fecha de registro:** 2026-11-12. **Módulo:** Productos. **Severidad:** Media. **Estado:** Corregida.
+- **Pasos:** entrar a Productos con parámetros opcionales de orden ausentes y observar la consulta de red. **Esperado:** se usan los valores por defecto permitidos. **Obtenido antes del arreglo:** Angular podía entregar `undefined` y el API respondía 409 por un orden no permitido.
+- **Causa raíz:** entradas ligadas a parámetros de ruta sin transformación/normalización efectiva.
+- **Corrección:** normalización de página, tamaño, campo de orden y dirección antes de llamar al servicio.
+- **Commit de corrección:** frontend `a891c3a`.
+- **Prevención:** `e2e/paginacion.spec.ts` cubre la carga inicial y el cambio de página; se debe conservar la consulta inicial sin 409.
+
+## INC-05 - Ventas sintéticas asignadas al mismo cliente
+
+- **Fecha de registro:** 2026-11-12. **Módulo:** Datos de demostración. **Severidad:** Media. **Estado:** Corregida.
+- **Pasos:** cargar el conjunto de volumen y revisar varias páginas recientes de Ventas. **Esperado:** la carga sintética se distribuye entre clientes de prueba. **Obtenido antes del arreglo:** todas las filas sintéticas se asociaban a Juan Pérez, lo que confundía las comprobaciones manuales.
+- **Causa raíz:** el SQL elegía siempre el cliente con ID mínimo.
+- **Corrección:** distribuir las ventas de carga entre los seis clientes; las ventas reales permanecen sin cambios.
+- **Commit de corrección:** backend `85fb971`.
+- **Prevención:** verificar varias páginas del conjunto generado y distinguir las ventas marcadas como carga de las ventas reales.
+
+## INC-06 - No había pantalla de auditoría en la SPA
+
+- **Fecha de registro:** 2026-11-12. **Módulo:** Auditoría y autorización. **Severidad:** Media. **Estado:** Corrección local en esta rama; falta publicar y confirmar E2E con servicios disponibles.
+- **Pasos:** iniciar sesión como administrador e intentar consultar `/auditoria` desde la SPA. **Esperado:** ruta protegida por `USUARIOS_ADMINISTRAR`, opción visible solo para administración, filtros en URL y lista paginada. **Obtenido antes del arreglo:** el API estaba disponible, pero no había ruta, servicio ni vista frontend.
+- **Causa raíz:** se había implementado el endpoint del backend sin conectar una página de administración en Angular.
+- **Corrección:** se añadió una vista paginada con filtros, ruta con permiso y opción de menú condicionada.
+- **Commit de corrección:** se registrará al publicar esta entrega S14.
+- **Prevención:** `e2e/estabilizacion.spec.ts` incluye acceso de administrador y denegación al vendedor; ejecutar las tres corridas indicadas por la guía.
+
+## Resumen
+
+| Severidad | Total | Abiertas |
+|---|---:|---:|
+| Crítica | 0 | 0 |
+| Alta | 2 | 0 |
+| Media | 4 | 1 |
+| Baja | 0 | 0 |
+
+La única pendiente de cierre es INC-06: el cambio está en el árbol de trabajo local, pero todavía falta crear el commit y comprobar la suite contra Oracle y el backend en marcha. No hay incidencias críticas ni altas abiertas.

@@ -283,6 +283,8 @@ public class VentaServiceImpl implements VentaService {
 
         venta.setEstado(EstadoVenta.ANULADA);
         Venta actualizada = ventaRepository.save(venta);
+        eventos.publishEvent(EventoAuditoria.de("VENTA_ANULADA", "Venta", actualizada.getId(),
+                "Venta anulada y stock restituido"));
 
         return convertirResponse(actualizada);
     }

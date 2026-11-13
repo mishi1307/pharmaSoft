@@ -11,6 +11,8 @@ import pe.edu.upeu.PharmaBackend.exception.RecursoNoEncontradoException;
 import pe.edu.upeu.PharmaBackend.exception.ReglaNegocioException;
 import pe.edu.upeu.PharmaBackend.repository.ClienteRepository;
 import pe.edu.upeu.PharmaBackend.service.service.ClienteService;
+import org.springframework.context.ApplicationEventPublisher;
+import pe.edu.upeu.PharmaBackend.dto.EventoAuditoria;
 
 
 import java.util.List;
@@ -23,10 +25,13 @@ public class ClienteServiceImpl
             LoggerFactory.getLogger(ClienteServiceImpl.class);
 
     private final ClienteRepository clienteRepository;
+    private final ApplicationEventPublisher eventos;
 
     public ClienteServiceImpl(
-            ClienteRepository clienteRepository) {
+            ClienteRepository clienteRepository,
+            ApplicationEventPublisher eventos) {
         this.clienteRepository = clienteRepository;
+        this.eventos = eventos;
     }
 
     @Override
@@ -75,6 +80,8 @@ public class ClienteServiceImpl
 
         Cliente guardado =
                 clienteRepository.save(cliente);
+
+        eventos.publishEvent(EventoAuditoria.de("CLIENTE_REGISTRADO", "Cliente", guardado.getId(), "Cliente registrado"));
 
         log.info(
                 "Cliente registrado correctamente id={}",

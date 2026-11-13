@@ -1,0 +1,71 @@
+{
+  "info": {
+    "_postman_id": "f12fb2f7-41a4-4b22-b976-a8d23727f1b2",
+    "name": "PharmaBackend - S14 API y permisos",
+    "description": "Casos API de lectura, creación, validación, autorización, recurso no encontrado y regla de negocio. Completa adminUser, adminPassword, vendedorUser y vendedorPassword antes de ejecutar.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "adminUser", "value": "" },
+    { "key": "adminPassword", "value": "" },
+    { "key": "vendedorUser", "value": "" },
+    { "key": "vendedorPassword", "value": "" },
+    { "key": "adminToken", "value": "" },
+    { "key": "vendedorToken", "value": "" },
+    { "key": "clienteDni", "value": "" },
+    { "key": "clienteEmail", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Login administrador",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"{{adminUser}}\",\n  \"password\": \"{{adminPassword}}\"\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/v1/auth/login"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Login de administrador responde 200', () => pm.response.to.have.status(200));", "if (pm.response.code === 200) pm.collectionVariables.set('adminToken', pm.response.json().token);"] } }]
+    },
+    {
+      "name": "2. Productos - lectura 200",
+      "request": { "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] }, "method": "GET", "url": "{{baseUrl}}/api/v1/productos?pagina=0&tamanio=20&ordenarPor=nombre&direccion=asc" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Consulta paginada responde 200', () => pm.response.to.have.status(200));", "pm.test('La respuesta contiene una página', () => pm.expect(pm.response.json()).to.have.property('contenido'));"] } }]
+    },
+    {
+      "name": "3. Cliente - creación 201",
+      "event": [{ "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["const sufijo = String(Date.now()).slice(-8);", "pm.collectionVariables.set('clienteDni', sufijo);", "pm.collectionVariables.set('clienteEmail', `s14.${sufijo}@example.test`);"] } }, { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Cliente creado', () => pm.response.to.have.status(201));"] } }],
+      "request": { "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] }, "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"dni\": \"{{clienteDni}}\",\n  \"nombres\": \"Prueba\",\n  \"apellidos\": \"S14\",\n  \"email\": \"{{clienteEmail}}\",\n  \"telefono\": \"987654321\",\n  \"direccion\": \"\",\n  \"estado\": true\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/v1/clientes" }
+    },
+    {
+      "name": "4. Ventas - validación 400",
+      "request": { "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] }, "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"clienteId\": null,\n  \"detalles\": []\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/v1/ventas" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Venta inválida responde 400', () => pm.response.to.have.status(400));"] } }]
+    },
+    {
+      "name": "5. Auditoría - sin token 401",
+      "request": { "auth": { "type": "noauth" }, "method": "GET", "url": "{{baseUrl}}/api/v1/auditoria?pagina=0&tamanio=20" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Sin token se rechaza con 401', () => pm.response.to.have.status(401));"] } }]
+    },
+    {
+      "name": "6. Login vendedor",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"username\": \"{{vendedorUser}}\",\n  \"password\": \"{{vendedorPassword}}\"\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/v1/auth/login" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Login de vendedor responde 200', () => pm.response.to.have.status(200));", "if (pm.response.code === 200) pm.collectionVariables.set('vendedorToken', pm.response.json().token);"] } }]
+    },
+    {
+      "name": "7. Auditoría - vendedor sin permiso 403",
+      "request": { "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{vendedorToken}}", "type": "string" }] }, "method": "GET", "url": "{{baseUrl}}/api/v1/auditoria?pagina=0&tamanio=20" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('El vendedor no autorizado recibe 403', () => pm.response.to.have.status(403));"] } }]
+    },
+    {
+      "name": "8. Productos - ID inexistente 404",
+      "request": { "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] }, "method": "GET", "url": "{{baseUrl}}/api/v1/productos/999999999" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('El ID inexistente devuelve 404', () => pm.response.to.have.status(404));"] } }]
+    },
+    {
+      "name": "9. Productos - orden no permitido 409",
+      "request": { "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] }, "method": "GET", "url": "{{baseUrl}}/api/v1/productos?pagina=0&tamanio=20&ordenarPor=campoNoPermitido&direccion=asc" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('La regla de ordenamiento devuelve 409', () => pm.response.to.have.status(409));"] } }]
+    }
+  ]
+}

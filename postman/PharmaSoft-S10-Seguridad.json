@@ -18,10 +18,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/login",
+            "url": "http://localhost:8080/api/v1/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"Admin2026*\"\n}",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"{{adminPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -46,7 +46,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/auth/me",
+            "url": "http://localhost:8080/api/v1/auth/me",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -80,10 +80,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/login",
+            "url": "http://localhost:8080/api/v1/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"vendedor\",\n  \"password\": \"Vendedor2026*\"\n}",
+              "raw": "{\n  \"username\": \"vendedor\",\n  \"password\": \"{{vendedorPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -113,10 +113,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/login",
+            "url": "http://localhost:8080/api/v1/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"almacen\",\n  \"password\": \"Almacen2026*\"\n}",
+              "raw": "{\n  \"username\": \"almacen\",\n  \"password\": \"{{almacenPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -146,10 +146,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/login",
+            "url": "http://localhost:8080/api/v1/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"supervisor\",\n  \"password\": \"Supervisor2026*\"\n}",
+              "raw": "{\n  \"username\": \"supervisor\",\n  \"password\": \"{{supervisorPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -179,7 +179,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/login",
+            "url": "http://localhost:8080/api/v1/auth/login",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"username\": \"no_existe_s10\",\n  \"password\": \"Incorrecta2026\"\n}",
@@ -201,7 +201,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/login",
+            "url": "http://localhost:8080/api/v1/auth/login",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"username\": \"vendedor\",\n  \"password\": \"Incorrecta2026\"\n}",
@@ -223,10 +223,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/login",
+            "url": "http://localhost:8080/api/v1/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"inactivo\",\n  \"password\": \"Inactivo2026\"\n}",
+              "raw": "{\n  \"username\": \"inactivo\",\n  \"password\": \"{{usuarioInactivoPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -245,10 +245,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/login",
+            "url": "http://localhost:8080/api/v1/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"VENDEDOR\",\n  \"password\": \"Vendedor2026*\"\n}",
+              "raw": "{\n  \"username\": \"VENDEDOR\",\n  \"password\": \"{{vendedorPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -267,7 +267,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/login",
+            "url": "http://localhost:8080/api/v1/auth/login",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"username\": \"vendedor\",\n  \"password\": \"\"\n}",
@@ -294,7 +294,7 @@
                 "value": "{{tokenVendedor}}"
               }
             ],
-            "url": "{{baseUrl}}/productos",
+            "url": "http://localhost:8080/api/v1/productos",
             "description": "El encabezado contiene el token sin la palabra Bearer."
           }
         },
@@ -303,7 +303,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/productos",
+            "url": "http://localhost:8080/api/v1/productos",
             "description": "El script cambia el último carácter de la firma del token de colección."
           },
           "event": [
@@ -328,7 +328,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/productos",
+            "url": "http://localhost:8080/api/v1/productos",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -347,7 +347,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/productos",
+            "url": "http://localhost:8080/api/v1/productos",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -366,7 +366,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/auth/me",
+            "url": "http://localhost:8080/api/v1/auth/me",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -390,7 +390,7 @@
                 "value": "Bearer token-invalido"
               }
             ],
-            "url": "{{baseUrl}}/productos"
+            "url": "http://localhost:8080/api/v1/productos"
           }
         }
       ]
@@ -408,7 +408,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/categorias",
+            "url": "http://localhost:8080/api/v1/categorias",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -441,7 +441,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/categorias/999999",
+            "url": "http://localhost:8080/api/v1/categorias/999999",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -468,7 +468,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{baseUrl}}/categorias/999999",
+            "url": "http://localhost:8080/api/v1/categorias/999999",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -487,7 +487,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/clientes",
+            "url": "http://localhost:8080/api/v1/clientes",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -510,7 +510,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/ventas",
+            "url": "http://localhost:8080/api/v1/ventas",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -538,7 +538,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/reportes/productos-mas-vendidos",
+            "url": "http://localhost:8080/api/v1/reportes/productos-mas-vendidos",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -556,7 +556,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/reportes/productos-mas-vendidos",
+            "url": "http://localhost:8080/api/v1/reportes/productos-mas-vendidos",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -574,7 +574,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/productos",
+            "url": "http://localhost:8080/api/v1/productos",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -592,7 +592,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/clientes",
+            "url": "http://localhost:8080/api/v1/clientes",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -610,7 +610,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/ventas/buscar",
+            "url": "http://localhost:8080/api/v1/ventas/buscar",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -628,7 +628,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/reportes/productos-mas-vendidos",
+            "url": "http://localhost:8080/api/v1/reportes/productos-mas-vendidos",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -646,7 +646,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/usuarios",
+            "url": "http://localhost:8080/api/v1/usuarios",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -660,11 +660,55 @@
           }
         },
         {
+          "name": "P-05 Preparar producto temporal (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://localhost:8080/api/v1/productos",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"TEMP-P05-SEGURIDAD-{{$timestamp}}\",\n  \"precio\": 1,\n  \"stock\": 1,\n  \"categoriaId\": 26\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Crea un producto desechable para comprobar DELETE sin arriesgar productos existentes."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) { pm.collectionVariables.set('productoIdPruebaP05', String(pm.response.json().id)); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "P-05 Almacén DELETE producto",
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{baseUrl}}/productos/999999",
+            "url": "http://localhost:8080/api/v1/productos/{{productoIdPruebaP05}}",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -675,7 +719,26 @@
                 }
               ]
             },
-            "description": "Usa un ID inexistente para evitar borrar datos si la protección estuviera mal configurada."
+            "description": "Usa el producto desechable creado en la petición anterior; debe responder 403."
+          }
+        },
+        {
+          "name": "P-05 Limpiar producto temporal (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "http://localhost:8080/api/v1/productos/{{productoIdPruebaP05}}",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Elimina el producto temporal después de concluir P-05."
           }
         }
       ]
@@ -693,7 +756,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios",
+            "url": "http://localhost:8080/api/v1/usuarios",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -725,7 +788,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios",
+            "url": "http://localhost:8080/api/v1/usuarios",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -757,7 +820,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios",
+            "url": "http://localhost:8080/api/v1/usuarios",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -789,7 +852,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios",
+            "url": "http://localhost:8080/api/v1/usuarios",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -817,7 +880,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/usuarios",
+            "url": "http://localhost:8080/api/v1/usuarios",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -851,10 +914,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/login",
+            "url": "http://localhost:8080/api/v1/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"mhuaman\",\n  \"password\": \"Cajera2026\"\n}",
+              "raw": "{\n  \"username\": \"mhuaman\",\n  \"password\": \"{{usuarioPruebaPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -884,7 +947,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios",
+            "url": "http://localhost:8080/api/v1/usuarios",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -929,7 +992,7 @@
                 "value": "authorization"
               }
             ],
-            "url": "{{baseUrl}}/productos",
+            "url": "http://localhost:8080/api/v1/productos",
             "description": "Postman permite revisar headers de preflight; la ausencia de error CORS se confirma haciendo el GET real desde la SPA y observando la pestaña Red del navegador."
           }
         }
@@ -948,7 +1011,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/password",
+            "url": "http://localhost:8080/api/v1/auth/password",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -980,7 +1043,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/password",
+            "url": "http://localhost:8080/api/v1/auth/password",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1013,7 +1076,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/password",
+            "url": "http://localhost:8080/api/v1/auth/password",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1045,7 +1108,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/password",
+            "url": "http://localhost:8080/api/v1/auth/password",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1077,7 +1140,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/password",
+            "url": "http://localhost:8080/api/v1/auth/password",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1114,7 +1177,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios/{{usuarioIdMaria}}/roles",
+            "url": "http://localhost:8080/api/v1/usuarios/{{usuarioIdMaria}}/roles",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1147,7 +1210,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/productos/999999",
+            "url": "http://localhost:8080/api/v1/productos/999999",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1180,7 +1243,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios/{{usuarioIdMaria}}/roles",
+            "url": "http://localhost:8080/api/v1/usuarios/{{usuarioIdMaria}}/roles",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1212,7 +1275,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios/999999/roles",
+            "url": "http://localhost:8080/api/v1/usuarios/999999/roles",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1244,7 +1307,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios/{{usuarioIdMaria}}/roles",
+            "url": "http://localhost:8080/api/v1/usuarios/{{usuarioIdMaria}}/roles",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1276,7 +1339,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios/{{usuarioIdAdmin}}/roles",
+            "url": "http://localhost:8080/api/v1/usuarios/{{usuarioIdAdmin}}/roles",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1308,7 +1371,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios/{{usuarioIdAdmin}}/estado",
+            "url": "http://localhost:8080/api/v1/usuarios/{{usuarioIdAdmin}}/estado",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1329,6 +1392,39 @@
               }
             }
           }
+        },
+        {
+          "name": "B-07 Usuario destino inexistente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://localhost:8080/api/v1/usuarios/999999/estado",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Prueba PATCH de estado con un ID inexistente; debe responder 404 sin modificar datos."
+          }
         }
       ]
     },
@@ -1345,7 +1441,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios/{{usuarioIdMaria}}/estado",
+            "url": "http://localhost:8080/api/v1/usuarios/{{usuarioIdMaria}}/estado",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1372,7 +1468,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/auth/me",
+            "url": "http://localhost:8080/api/v1/auth/me",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1395,10 +1491,10 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/auth/login",
+            "url": "http://localhost:8080/api/v1/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"mhuaman\",\n  \"password\": \"Cajera2026\"\n}",
+              "raw": "{\n  \"username\": \"mhuaman\",\n  \"password\": \"{{usuarioPruebaPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1417,7 +1513,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios/{{usuarioIdMaria}}/estado",
+            "url": "http://localhost:8080/api/v1/usuarios/{{usuarioIdMaria}}/estado",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1450,7 +1546,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/usuarios/{{usuarioIdMaria}}/roles",
+            "url": "http://localhost:8080/api/v1/usuarios/{{usuarioIdMaria}}/roles",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -1540,6 +1636,41 @@
     {
       "key": "rolIdAlmacen",
       "value": "3",
+      "type": "string"
+    },
+    {
+      "key": "productoIdPruebaP05",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "almacenPassword",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "vendedorPassword",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "supervisorPassword",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminPassword",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "usuarioPruebaPassword",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "usuarioInactivoPassword",
+      "value": "",
       "type": "string"
     }
   ]

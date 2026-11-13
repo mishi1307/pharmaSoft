@@ -1,0 +1,57 @@
+{
+  "info": {
+    "name": "PharmaSoft - S13 Caché Redis (solo lectura)",
+    "description": "Ejecuta 20 iteraciones. En cada iteración inicia sesión y consulta categorías y productos. Configura username y password en variables locales de Postman; no compartas esos valores ni capturas donde se vean.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "username", "value": "admin" },
+    { "key": "password", "value": "" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Login (guarda el token localmente)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "{{baseUrl}}/api/v1/auth/login" }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  pm.collectionVariables.set('token', pm.response.json().token);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. GET categorías",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": { "raw": "{{baseUrl}}/api/v1/categorias" }
+      }
+    },
+    {
+      "name": "3. GET productos página 0",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": { "raw": "{{baseUrl}}/api/v1/productos?pagina=0" }
+      }
+    }
+  ]
+}

@@ -19,7 +19,6 @@ import pe.edu.upeu.PharmaBackend.security.JwtService;
 import pe.edu.upeu.PharmaBackend.security.PermisosPorRol;
 import pe.edu.upeu.PharmaBackend.service.service.AuthService;
 import java.nio.charset.StandardCharsets;
-import org.springframework.security.core.AuthenticationException;
 import pe.edu.upeu.PharmaBackend.dto.EventoAuditoria;
 import pe.edu.upeu.PharmaBackend.service.service.AuditoriaService;
 
@@ -42,13 +41,7 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponseDTO login(LoginRequestDTO request) {
         String username = request.getUsername().trim();
         log.info("Intento de inicio de sesión: usuario={}", username);
-        Authentication auth;
-        try {
-            auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, request.getPassword()));
-        } catch (AuthenticationException ex) {
-            registrarEventoLogin("LOGIN_FALLIDO", username);
-            throw ex;
-        }
+        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, request.getPassword()));
         UserDetails principal = (UserDetails) auth.getPrincipal();
         Usuario user = buscar(principal.getUsername());
         String token = jwtService.generarToken(principal);
