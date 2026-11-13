@@ -49,11 +49,11 @@ Las fechas indican cuándo quedó documentada cada incidencia en esta entrega; l
 
 ## INC-06 - No había pantalla de auditoría en la SPA
 
-- **Fecha de registro:** 2026-11-12. **Módulo:** Auditoría y autorización. **Severidad:** Media. **Estado:** Corrección local en esta rama; falta publicar y confirmar E2E con servicios disponibles.
+- **Fecha de registro:** 2026-11-12. **Módulo:** Auditoría y autorización. **Severidad:** Media. **Estado:** Corregida en los dos repositorios; confirmación E2E pendiente.
 - **Pasos:** iniciar sesión como administrador e intentar consultar `/auditoria` desde la SPA. **Esperado:** ruta protegida por `USUARIOS_ADMINISTRAR`, opción visible solo para administración, filtros en URL y lista paginada. **Obtenido antes del arreglo:** el API estaba disponible, pero no había ruta, servicio ni vista frontend.
 - **Causa raíz:** se había implementado el endpoint del backend sin conectar una página de administración en Angular.
 - **Corrección:** se añadió una vista paginada con filtros, ruta con permiso y opción de menú condicionada.
-- **Commit de corrección:** se registrará al publicar esta entrega S14.
+- **Commit de corrección:** backend `1b00186`; frontend `dafd8e4`.
 - **Prevención:** `e2e/estabilizacion.spec.ts` incluye acceso de administrador y denegación al vendedor; ejecutar las tres corridas indicadas por la guía.
 
 ## Resumen
@@ -65,4 +65,4 @@ Las fechas indican cuándo quedó documentada cada incidencia en esta entrega; l
 | Media | 4 | 1 |
 | Baja | 0 | 0 |
 
-La única pendiente de cierre es INC-06: el cambio está en el árbol de trabajo local, pero todavía falta crear el commit y comprobar la suite contra Oracle y el backend en marcha. No hay incidencias críticas ni altas abiertas.
+La única pendiente de verificación es INC-06: el cambio ya está publicado en las ramas de trabajo, pero falta comprobar la suite contra Oracle y el backend en marcha. No hay incidencias críticas ni altas abiertas.
